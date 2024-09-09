@@ -25,15 +25,14 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 ```bash
 # Verify
 sudo docker run hello-world
-```
-
-Create a new directory for your Prometheus and Grafana configuration files: 
+``` 
 ```bash
+# Create a new directory for your Prometheus and Grafana configuration files:
 mkdir /opt/monitoring
 cd /opt/monitoring
 ```
-Create a new Docker Compose file:
 ```bash
+# Create a new Docker Compose file:
 vi docker-compose.yml
 ```
 ```yaml
