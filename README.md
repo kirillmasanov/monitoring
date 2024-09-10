@@ -292,8 +292,8 @@ http://<node_ip>:9090/targets  # Status > Targets
 Import dashboard to Grafana: `MySQL Overview ID 7362`
 
 > [!NOTE]
-> Fix the chart `Pool Size of Total RAM graph` in the dashboard ID 7362:
-> The problem is that the ports of the exporters (node_exporter and mysqld_exporter) are different (since they are on the same node), so the `$host` variable cannot be used.We should add an additional label to `prometheus.yml` (for example, alias=[db1, db2, ..]) to each job.
-> In Grafana create the `alias` variable: `label_value(node_uname_info,alias)`.
-> And We receive a request: 
+Fix the chart `Pool Size of Total RAM graph` in the dashboard ID 7362:
+The problem is that the ports of the exporters (node_exporter and mysqld_exporter) are different (since they are on the same node), so the `$host` variable cannot be used.We should add an additional label to `prometheus.yml` (for example, alias=[db1, db2, ..]) to each job.
+In Grafana create the `alias` variable: `label_value(node_uname_info,alias)`.
+And We receive a request: 
 `(mysql_global_variables_innodb_buffer_pool_size{alias="$alias"} * 100) / on (alias) node_memory_MemTotal_bytes{alias="$alias"}`
