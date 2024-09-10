@@ -1,7 +1,16 @@
 # Deploy Prometheus and Grafana
-Install Docker:
 
-[Docker docs](https://docs.docker.com/engine/install/ubuntu/)
+Below is a guide for installing *Prometheus* and *Grafana* using *Docker Compose*. As well as installing *node-exporter* and *mysqld_exporter* and connecting them to Prometheus. Adding the corresponding dashboards to Grafana.
+```
+Versions used:
++ Ubuntu 22.04.4 LTS
++ Grafana v11.2.0
++ Prometheus 2.54.1
++ node_exporter 1.8.2
++ mysqld_exporter 0.15.1
+```
+Install Docker
+([Docker docs](https://docs.docker.com/engine/install/ubuntu/))
 ```bash
 # Add Docker's official GPG key:
 sudo apt-get update
@@ -296,5 +305,5 @@ Fix the chart `Pool Size of Total RAM graph` in the dashboard ID 7362:
 The problem is that the ports of the exporters (node_exporter and mysqld_exporter) are different (since they are on the same node), so the `$host` variable cannot be used.We should add an additional label to `prometheus.yml` (for example, alias=[db1, db2, ..]) to each job.\
 In Grafana create the `alias` variable:
 `label_value(node_uname_info,alias)`.\
-And We receive a request: \
+And we receive a request: \
 `(mysql_global_variables_innodb_buffer_pool_size{alias="$alias"} * 100) / on (alias) node_memory_MemTotal_bytes{alias="$alias"}`
