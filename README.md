@@ -3,11 +3,11 @@
 Below is a guide for installing *Prometheus* and *Grafana* using *Docker Compose*. As well as installing *node-exporter* and *mysqld_exporter* and connecting them to Prometheus. Adding the corresponding dashboards to Grafana.
 ```
 Versions used:
-+ Ubuntu 22.04.4 LTS
-+ Grafana v11.2.0
-+ Prometheus 2.54.1
-+ node_exporter 1.8.2
-+ mysqld_exporter 0.15.1
+- Ubuntu 22.04.4 LTS
+- Grafana v11.2.0
+- Prometheus 2.54.1
+- node_exporter 1.8.2
+- mysqld_exporter 0.15.1
 ```
 Install Docker
 ([Docker docs](https://docs.docker.com/engine/install/ubuntu/))
