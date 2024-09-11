@@ -141,7 +141,9 @@ docker compose exec [service name] [command]
 # List images used by the created containers
 docker compose images
 ```
-**node_exporter install & setup**
+**node_exporter**
+
+[Github releases](https://github.com/prometheus/node_exporter/releases)
 ```bash
 wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz
 tar xvfz node_exporter-1.8.2.linux-amd64.tar.gz
@@ -200,6 +202,9 @@ Dashboards > New > Import > write ID > Load
 # Node Exporter Full (ID: 1860)
 ```
 **mysqld_exporter**
+
+[Github releases](https://github.com/prometheus/mysqld_exporter/releases)
+
 ```bash
 # Add Prometheus system user and group
 sudo groupadd --system prometheus
@@ -311,6 +316,8 @@ And we receive a request: \
 instead of `(mysql_global_variables_innodb_buffer_pool_size{instance="$host"} * 100) / on (instance) node_memory_MemTotal_bytes{instance="$host"}`
 
 **blackbox_exporter**
+
+[Github releases](https://github.com/prometheus/blackbox_exporter/releases)
 ```bash
 # Download and install blackbox_exporter
 wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.25.0/blackbox_exporter-0.25.0.linux-amd64.tar.gz
