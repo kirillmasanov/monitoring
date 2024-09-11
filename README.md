@@ -307,3 +307,4 @@ In Grafana create the `alias` variable:
 `label_value(node_uname_info,alias)`.\
 And we receive a request: \
 `(mysql_global_variables_innodb_buffer_pool_size{alias="$alias"} * 100) / on (alias) node_memory_MemTotal_bytes{alias="$alias"}`
+instead of `(mysql_global_variables_innodb_buffer_pool_size{instance="$host"} * 100) / on (instance) node_memory_MemTotal_bytes{instance="$host"}`
