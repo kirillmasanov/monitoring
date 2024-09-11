@@ -8,6 +8,7 @@ Versions used:
 - Prometheus 2.54.1
 - node_exporter 1.8.2
 - mysqld_exporter 0.15.1
+- blackbox_exporter 0.25.0
 ```
 Install Docker
 ([Docker docs](https://docs.docker.com/engine/install/ubuntu/))
@@ -308,3 +309,93 @@ In Grafana create the `alias` variable:
 And we receive a request: \
 `(mysql_global_variables_innodb_buffer_pool_size{alias="$alias"} * 100) / on (alias) node_memory_MemTotal_bytes{alias="$alias"}`
 instead of `(mysql_global_variables_innodb_buffer_pool_size{instance="$host"} * 100) / on (instance) node_memory_MemTotal_bytes{instance="$host"}`
+
+**blackbox_exporter**
+```bash
+# Download and install blackbox_exporter
+wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.25.0/blackbox_exporter-0.25.0.linux-amd64.tar.gz
+tar xvfz blackbox_exporter-0.25.0.linux-amd64.tar.gz
+cp blackbox_exporter-0.25.0.linux-amd64/blackbox_exporter /usr/local/bin
+```
+```bash
+# Create configuration folders for the blackbox_exporter
+mkdir -p /etc/blackbox
+cp blackbox_exporter-0.25.0.linux-amd64/blackbox.yml /etc/blackbox
+rm -rf ./black*
+```
+```bash
+# create a user account for the blackbox_exporter
+useradd -rs /bin/false blackbox
+chown blackbox:blackbox /usr/local/bin/blackbox_exporter
+chown -R blackbox:blackbox /etc/blackbox/*
+```
+```bash
+# Check version of the blackbox_exporter
+blackbox_exporter --version
+```
+```bash
+# Create systemd unit file
+vim /etc/systemd/system/blackbox.service
+```
+```yaml
+[Unit]
+Description=Blackbox Exporter Service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=blackbox
+Group=blackbox
+ExecStart=/usr/local/bin/blackbox_exporter \
+  --config.file=/etc/blackbox/blackbox.yml \
+  --web.listen-address=":9115"
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+```bash
+systemctl daemon-reload
+systemctl start blackbox
+systemctl enable blackbox
+systemctl status blackbox
+```
+```bash
+# Check the gathering metrics
+curl http://<ip>:9115/metrics
+# In browser: 
+<ip>:9115
+```
+```bash
+# Binding the blackbox_exporter with Prometheus
+vi prometheus.yml
+```
+```yaml
+- job_name: blackbox-ssl
+    metrics_path: /probe
+    params:
+      module:
+      - http_2xx
+    relabel_configs:
+    - source_labels:
+      - __address__
+      target_label: __param_target
+    - source_labels:
+      - __param_target
+      target_label: instance
+    - replacement: <ip>:9115
+      target_label: __address__
+    static_configs:
+    - targets:
+    - <domain_name>
+```
+```bash
+docker compose restart prometheus
+```
+```bash
+# Check target
+http://<node_ip>:9090/targets  # Status > Targets
+```
+Import dashboard to Grafana: `BlackBox Exporter. ID 18538`
