@@ -10,7 +10,7 @@ Versions used:
 - mysqld_exporter 0.15.1
 - blackbox_exporter 0.25.0
 ```
-Install Docker
+## Deploy with Dockercompose
 ([Docker docs](https://docs.docker.com/engine/install/ubuntu/))
 ```bash
 # Add Docker's official GPG key:
@@ -141,7 +141,7 @@ docker compose exec [service name] [command]
 # List images used by the created containers
 docker compose images
 ```
-**node_exporter**
+## node_exporter
 
 [Github releases](https://github.com/prometheus/node_exporter/releases)
 ```bash
@@ -201,7 +201,7 @@ http://<node_ip>:9090/targets  # Status > Targets
 Dashboards > New > Import > write ID > Load
 # Node Exporter Full (ID: 1860)
 ```
-**mysqld_exporter**
+## mysqld_exporter
 
 [Github releases](https://github.com/prometheus/mysqld_exporter/releases)
 
@@ -315,7 +315,7 @@ And we receive a request: \
 `(mysql_global_variables_innodb_buffer_pool_size{alias="$alias"} * 100) / on (alias) node_memory_MemTotal_bytes{alias="$alias"}`
 instead of `(mysql_global_variables_innodb_buffer_pool_size{instance="$host"} * 100) / on (instance) node_memory_MemTotal_bytes{instance="$host"}`
 
-**blackbox_exporter**
+## blackbox_exporter
 
 [Github releases](https://github.com/prometheus/blackbox_exporter/releases)
 ```bash
