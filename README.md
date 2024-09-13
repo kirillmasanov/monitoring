@@ -146,15 +146,15 @@ docker compose images
 [Github releases](https://github.com/prometheus/node_exporter/releases)
 ```bash
 wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz
-tar xvfz node_exporter-1.8.2.linux-amd64.tar.gz
-cp node_exporter-1.8.2.linux-amd64/node_exporter /usr/local/bin
-rm -rf ./node*
-useradd -M -r -s /usr/sbin/nologin node_exporter
+tar xvf node_exporter-1.8.2.linux-amd64.tar.gz
+cd node_exporter-1.8.2.linux-amd64
+cp node_exporter /usr/local/bin
+useradd --no-create-home --shell /bin/false node_exporter
+chown node_exporter:node_exporter /usr/local/bin/node_exporter
 ```
 ```bash
 # Check version of node_exporter
 node_exporter --version
-<node_ip>:9100
 ```
 ```bash
 # Create systemd unit file
@@ -163,39 +163,48 @@ vim /etc/systemd/system/node_exporter.service
 ```yaml
 [Unit]
 Description=Node Exporter
-
 Wants=network-online.target
 After=network-online.target
 
 [Service]
 User=node_exporter
 Group=node_exporter
-
+Type=simple
 ExecStart=/usr/local/bin/node_exporter
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
 ```
 ```bash
 systemctl daemon-reload
 systemctl start node_exporter
-systemctl enable node_exporter
-systemctl status node_exporter
+systemctl enable node_exporter  #dtart service on-boot
+systemctl status node_exporter  # check service
+```
+```bash
+# check to retrieve metrics
+curl localhost:9100/metrics
 ```
 ```yaml
 # Edit prometheus.yml
 scrape_configs:
 - job_name: 'node_exporter'
-  scrape_interval: 5s
+  scrape_interval: 15s
+  scrape_timeout: 5s
+  sample_limit: 1000
   static_configs:
-  - targets: ['TARGET1_IP:9100','TARGET2_IP:9100']
+  - targets: ['TARGET1_IP:9100']
 ```
 ```bash
 docker compose restart prometheus
 ```
 ```bash
-# Check target
-http://<node_ip>:9090/targets  # Status > Targets
+# Check target in prometheus UI
+http://<node_ip>:9090/targets
+Status > Targets
+or
+Graph > 'up' > Execute
+```
 ```bash
 # Load Grafana dashboard
 Dashboards > New > Import > write ID > Load
@@ -215,7 +224,7 @@ sudo useradd -s /sbin/nologin --system -g prometheus prometheus
 curl -s https://api.github.com/repos/prometheus/mysqld_exporter/releases/latest   | grep browser_download_url   | grep linux-amd64 | cut -d '"' -f 4   | wget -qi -
 tar xvf mysqld_exporter*.tar.gz
 sudo mv  mysqld_exporter-*.linux-amd64/mysqld_exporter /usr/local/bin/
-sudo chmod +x /usr/local/bin/mysqld_exporter
+chown prometheus:prometheus /usr/local/bin/mysqld_exporter
 rm -rf ./mysqld*
 ```
 ```bash
